@@ -2,6 +2,7 @@ package com.example.kodeoppgave
 
 import com.fasterxml.jackson.annotation.JsonProperty
 import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 import java.time.temporal.WeekFields
 import java.util.*
 
@@ -24,3 +25,17 @@ data class Ad(@JsonProperty("uuid") val uuid: String,
 val weekfields: WeekFields = WeekFields.of(Locale.getDefault())
 var fromDate: LocalDateTime = LocalDateTime.now()
 val endDate: LocalDateTime = fromDate.minusMonths(6)
+
+fun toLocalDateTime(date: String): LocalDateTime = LocalDateTime.parse(date, DateTimeFormatter.ISO_DATE_TIME)
+
+fun List<Ad>.filterOlderAds(endDate: LocalDateTime): List<Ad>{
+    return this.filter { toLocalDateTime(it.published) > endDate }
+}
+
+fun List<Ad>.getAdsWithKeyword(keyword: String): List<Ad>{
+    return this.filter { it.description.toLowerCase().contains(keyword) }
+}
+
+fun List<Ad>.groupPerWeek(): Map<Int, Int>{
+    return this.groupingBy { toLocalDateTime(it.published).get(weekfields.weekOfYear()) }.eachCount()
+}

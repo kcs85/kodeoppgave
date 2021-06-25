@@ -63,18 +63,5 @@ class Service(
         return ads.flatten()
     }
 
-    fun toLocalDateTime(date: String): LocalDateTime = LocalDateTime.parse(date, DateTimeFormatter.ISO_DATE_TIME)
-
-    fun List<Ad>.filterOlderAds(endDate: LocalDateTime): List<Ad>{
-        return this.filter { toLocalDateTime(it.published) > endDate }
-    }
-
-    fun List<Ad>.getAdsWithKeyword(keyword: String): List<Ad>{
-        return this.filter { it.description.toLowerCase().contains(keyword) }
-    }
-
-    fun List<Ad>.groupPerWeek(): Map<Int, Int>{
-        return this.groupingBy { toLocalDateTime(it.published).get(weekfields.weekOfYear()) }.eachCount()
-    }
 }
 
